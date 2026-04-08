@@ -13,6 +13,7 @@ const Navbar = () => {
       <nav className="container mx-auto px-6 py-5 flex items-center justify-between">
         <Link
           to="/"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="flex items-center font-serif text-2xl tracking-wide text-[#474a28] hover:text-[#bfc725] transition-colors duration-300 z-50"
         >
           <img
