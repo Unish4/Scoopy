@@ -1,16 +1,40 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import home from "../assets/image.png";
-import { ShoppingBag, Menu, X, Home, Store, MessageSquare, BookOpen } from "lucide-react";
+import { useCart } from "../context/CartContext";
+import {
+  ShoppingBag,
+  Menu,
+  X,
+  Home,
+  Store,
+  MessageSquare,
+  BookOpen,
+} from "lucide-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { getItemCount } = useCart();
+  const itemCount = getItemCount();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#FAF8F5]/90 backdrop-blur/70 border-b border-[#E8D9C5]/60 transition-all duration-300">
       <nav className="container mx-auto px-6 py-5 flex items-center justify-between">
+        {/* Mobile Hamburger Menu (Left) */}
+        <button
+          onClick={toggleMenu}
+          className="md:hidden text-[#4A3828] hover:text-[#B8956A] focus:outline-none transition-colors duration-300 z-50"
+        >
+          {isMenuOpen ? (
+            <X className="w-7 h-7" />
+          ) : (
+            <Menu className="w-7 h-7" />
+          )}
+        </button>
+
+        {/* Logo (Center on Mobile, Left on Desktop) */}
         <Link
           to="/"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -52,30 +76,36 @@ const Navbar = () => {
           </Link>
           <Link
             to={"/cart"}
-            className="text-md tracking-wide transition-colors text-[#4A3828] hover:text-[#B8956A]"
+            className="relative text-md tracking-wide transition-colors text-[#4A3828] hover:text-[#B8956A]"
           >
             <ShoppingBag className="w-5 h-5 text-[#4A3828] hover:text-[#B8956A] transition-colors duration-300" />
+            {itemCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-[#B8956A] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                {itemCount}
+              </span>
+            )}
           </Link>
         </div>
 
-        {/* Mobile Navigation Icons */}
-        <div className="flex items-center gap-6 md:hidden z-50">
-          <Link to="/cart">
+        {/* Mobile Shopping Bag (Right) */}
+        <div className="flex items-center md:hidden z-50">
+          <Link to="/cart" className="relative block">
             <ShoppingBag className="w-6 h-6 text-[#4A3828] hover:text-[#B8956A] transition-colors duration-300" />
+            {itemCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-[#B8956A] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                {itemCount}
+              </span>
+            )}
           </Link>
-          <button 
-            onClick={toggleMenu} 
-            className="text-[#4A3828] hover:text-[#B8956A] focus:outline-none transition-colors duration-300"
-          >
-            {isMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
-          </button>
         </div>
       </nav>
 
       {/* Mobile Menu Dropdown */}
-      <div 
+      <div
         className={`md:hidden absolute top-full left-0 right-0 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#E8D9C5]/60 transition-all duration-300 overflow-hidden ${
-          isMenuOpen ? 'max-h-96 py-6 shadow-lg' : 'max-h-0 py-0 border-transparent'
+          isMenuOpen
+            ? "max-h-96 py-6 shadow-lg"
+            : "max-h-0 py-0 border-transparent"
         }`}
       >
         <div className="flex flex-col gap-6 px-6">

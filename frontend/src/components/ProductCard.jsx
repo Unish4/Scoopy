@@ -1,7 +1,17 @@
 import { Link } from "react-router-dom";
 import { ShoppingBag, Sparkles } from "lucide-react";
+import { useCart } from "../context/CartContext";
+import { toast } from "sonner";
 
 export function ProductCard({ product }) {
+  const { addToCart } = useCart();
+
+  const handleQuickAdd = (e) => {
+    e.preventDefault();
+    addToCart(product, 1);
+    toast.success(`${product.name} added to cart!`);
+  };
+
   return (
     <Link to={`/products/${product.id}`} className="group">
       <div className="relative overflow-hidden rounded-2xl bg-white shadow-sm hover:shadow-xl transition-all duration-300">
@@ -37,10 +47,7 @@ export function ProductCard({ product }) {
               ${product.price.toFixed(2)}
             </span>
             <button
-              onClick={(e) => {
-                e.preventDefault();
-                console.log(`${product.name} added to cart`);
-              }}
+              onClick={handleQuickAdd}
               className="p-3 bg-[#FAF8F5] rounded-full hover:bg-[#B8956A] hover:text-white transition-all duration-300 hover:scale-110 group/btn"
             >
               <ShoppingBag className="w-5 h-5" />

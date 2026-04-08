@@ -3,11 +3,15 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, ShoppingBag } from "lucide-react";
 import { getProductById, products } from "../data/products";
 import { ProductCard } from "../components/ProductCard";
+import { useCart } from "../context/CartContext";
+import { toast } from "sonner";
+
 
 const ProductDetails = () => {
   const { id } = useParams();
   const product = id ? getProductById(id) : undefined;
   const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart();
 
   if (!product) {
     return (
@@ -25,6 +29,9 @@ const ProductDetails = () => {
   const handleAddToCart = () => {
     console.log(`${quantity} x ${product.name} added to cart`);
     // TODO: Implement cart functionality
+    addToCart(product, quantity);
+      toast.success(`${quantity} x ${product.name} added to cart`);
+    
   };
   const relatedProducts = products
     .filter(
@@ -40,7 +47,7 @@ const ProductDetails = () => {
       <div className="container mx-auto px-6">
         <Link
           to="/products"
-          className="inline-flex items-center gap-2 text-[#6B5A4A] hover:text-[#B8956A] mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-[#6B5A4A] hover:text-[#B8956A] mt-18 mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Shop
@@ -116,9 +123,8 @@ const ProductDetails = () => {
               Add to Cart
             </button>
           </div>
-          
         </div>
-       {relatedProducts.length > 0 && (
+        {relatedProducts.length > 0 && (
           <div>
             <h2 className="font-serif text-3xl text-[#4A3828] mt-8 mb-8">
               You May Also Like
@@ -129,9 +135,8 @@ const ProductDetails = () => {
               ))}
             </div>
           </div>
-        )} 
+        )}
       </div>
-      
     </div>
   );
 };
