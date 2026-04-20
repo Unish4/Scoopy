@@ -1,24 +1,15 @@
 import { Link } from "react-router-dom";
 import { Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { useCart } from "../context/CartContext";
-import { useState } from "react";
 import { toast } from "sonner";
 
 export function Cart() {
   const { items, updateQuantity, removeFromCart, getTotal } = useCart();
-  const [promoCode, setPromoCode] = useState("");
 
   const handleCheckout = () => {
     toast.success("Proceeding to checkout...");
   };
 
-  const applyPromoCode = () => {
-    if (promoCode.toUpperCase() === "SCOOPY04") {
-      toast.success("Promo code applied! 10% discount");
-    } else if (promoCode) {
-      toast.error("Invalid promo code");
-    }
-  };
 
   if (items.length === 0) {
     return (
@@ -136,25 +127,6 @@ export function Cart() {
                     <span>Total</span>
                     <span className="font-serif text-2xl">${total.toFixed(2)}</span>
                   </div>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <label className="text-sm text-[#6B5A4A] mb-2 block">Promo Code</label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={promoCode}
-                    onChange={(e) => setPromoCode(e.target.value)}
-                    placeholder="Enter code"
-                    className="flex-1 px-4 py-2 border border-[#E8D9C5] rounded-lg text-sm focus:outline-none focus:border-[#B8956A] transition-colors"
-                  />
-                  <button
-                    onClick={applyPromoCode}
-                    className="px-4 py-2 bg-[#F5F1EB] text-[#4A3828] rounded-lg text-sm hover:bg-[#E8D9C5] transition-colors"
-                  >
-                    Apply
-                  </button>
                 </div>
               </div>
 
