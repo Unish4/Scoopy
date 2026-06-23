@@ -1,15 +1,26 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { toast } from "sonner";
 
 export function Cart() {
-  const { items, updateQuantity, removeFromCart, getTotal } = useCart();
+  const { items, updateQuantity, removeFromCart, getTotal, loading } = useCart();
+  const navigate = useNavigate();
 
   const handleCheckout = () => {
-    toast.success("Proceeding to checkout...");
+    navigate('/checkout');
   };
 
+  if (loading) {
+    return (
+      <div className="py-20">
+        <div className="container mx-auto mt-10 px-6 text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#B8956A] mx-auto mb-6"></div>
+          <p className="text-[#6B5A4A]">Loading cart...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
@@ -47,12 +58,12 @@ export function Cart() {
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
             {items.map(item => (
-              <div key={item.product.id} className="bg-white rounded-2xl shadow-sm p-6">
+              <div key={item.productId} className="bg-white rounded-2xl shadow-sm p-6">
                 <div className="flex gap-6">
                   <div className="w-32 h-32 rounded-xl overflow-hidden bg-[#F5F1EB] shrink-0">
                     <img
-                      src={item.product.image}
-                      alt={item.product.name}
+                      src={item.image}
+                      alt={item.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -60,30 +71,30 @@ export function Cart() {
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
                       <Link
-                        to={`/products/${item.product.id}`}
+                        to={`/products/${item.productId}`}
                         className="font-serif text-xl text-[#4A3828] hover:text-[#B8956A] transition-colors mb-1"
                       >
-                        {item.product.name}
+                        {item.name}
                       </Link>
                       <p className="text-sm text-[#6B5A4A] mb-2">
-                        {item.product.category}
+                        {item.category}
                       </p>
                       <p className="text-lg text-[#4A3828]">
-                        ${item.product.price.toFixed(2)}
+                        ${item.price.toFixed(2)}
                       </p>
                     </div>
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <button
-                          onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                          onClick={() => updateQuantity(item.productId, item.quantity - 1)}
                           className="w-8 h-8 rounded-full bg-[#F5F1EB] text-[#4A3828] hover:bg-[#E8D9C5] transition-all"
                         >
                           −
                         </button>
                         <span className="text-[#4A3828] w-8 text-center">{item.quantity}</span>
                         <button
-                          onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                          onClick={() => updateQuantity(item.productId, item.quantity + 1)}
                           className="w-8 h-8 rounded-full bg-[#F5F1EB] text-[#4A3828] hover:bg-[#E8D9C5] transition-all"
                         >
                           +
@@ -91,7 +102,7 @@ export function Cart() {
                       </div>
 
                       <button
-                        onClick={() => removeFromCart(item.product.id)}
+                        onClick={() => removeFromCart(item.productId)}
                         className="text-[#6B5A4A] hover:text-red-500 transition-colors"
                       >
                         <Trash2 className="w-5 h-5" />

@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { ShoppingBag, Sparkles } from "lucide-react";
 import { useCart } from "../context/CartContext";
-import { toast } from "sonner";
 
 export function ProductCard({ product }) {
   const { addToCart } = useCart();
@@ -9,7 +8,6 @@ export function ProductCard({ product }) {
   const handleQuickAdd = (e) => {
     e.preventDefault();
     addToCart(product, 1);
-    toast.success(`${product.name} added to cart!`);
   };
 
   return (

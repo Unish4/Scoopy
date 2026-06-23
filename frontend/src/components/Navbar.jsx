@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import home from "../assets/image.png";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
 import {
   ShoppingBag,
   Menu,
@@ -10,14 +11,26 @@ import {
   Store,
   MessageSquare,
   BookOpen,
+  User,
+  LogOut,
+  Settings,
+  Shield,
 } from "lucide-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { getItemCount } = useCart();
+  const { user, isAuthenticated, logout, isAdmin } = useAuth();
   const itemCount = getItemCount();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleUserMenu = () => setIsUserMenuOpen(!isUserMenuOpen);
+
+  const handleLogout = () => {
+    logout();
+    setIsUserMenuOpen(false);
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#FAF8F5]/90 backdrop-blur/70 border-b border-[#E8D9C5]/60 transition-all duration-300">
@@ -85,6 +98,64 @@ const Navbar = () => {
               </span>
             )}
           </Link>
+
+          {/* User Menu */}
+          {isAuthenticated ? (
+            <div className="relative">
+              <button
+                onClick={toggleUserMenu}
+                className="flex items-center gap-2 text-md tracking-wide transition-colors text-[#4A3828] hover:text-[#B8956A]"
+              >
+                <User className="w-4 h-4" />
+                <span className="hidden lg:block">{user.name}</span>
+              </button>
+
+              {isUserMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-[#E8D9C5] py-2 z-50">
+                  <Link
+                    to="/profile"
+                    onClick={() => setIsUserMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-[#4A3828] hover:bg-[#F5F1EB] transition-colors"
+                  >
+                    <Settings className="w-4 h-4" />
+                    Profile
+                  </Link>
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-[#4A3828] hover:bg-[#F5F1EB] transition-colors"
+                    >
+                      <Shield className="w-4 h-4" />
+                      Admin Dashboard
+                    </Link>
+                  )}
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-[#4A3828] hover:bg-[#F5F1EB] transition-colors w-full text-left"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center gap-4">
+              <Link
+                to="/login"
+                className="text-md tracking-wide transition-colors text-[#4A3828] hover:text-[#B8956A]"
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="px-4 py-2 bg-[#B8956A] text-white rounded-lg hover:bg-[#A07F52] transition-all duration-300 text-sm"
+              >
+                Sign Up
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Mobile Shopping Bag (Right) */}
@@ -137,6 +208,54 @@ const Navbar = () => {
           >
             <BookOpen className="w-5 h-5" /> Our Story
           </Link>
+
+          {/* Mobile Auth Links */}
+          {isAuthenticated ? (
+            <>
+              <Link
+                to="/profile"
+                onClick={toggleMenu}
+                className="text-lg tracking-wide flex items-center gap-3 transition-colors text-[#4A3828] hover:text-[#B8956A]"
+              >
+                <User className="w-5 h-5" /> Profile
+              </Link>
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  onClick={toggleMenu}
+                  className="text-lg tracking-wide flex items-center gap-3 transition-colors text-[#4A3828] hover:text-[#B8956A]"
+                >
+                  <Shield className="w-5 h-5" /> Admin
+                </Link>
+              )}
+              <button
+                onClick={() => {
+                  handleLogout();
+                  toggleMenu();
+                }}
+                className="text-lg tracking-wide flex items-center gap-3 transition-colors text-[#4A3828] hover:text-[#B8956A] text-left"
+              >
+                <LogOut className="w-5 h-5" /> Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                onClick={toggleMenu}
+                className="text-lg tracking-wide flex items-center gap-3 transition-colors text-[#4A3828] hover:text-[#B8956A]"
+              >
+                <User className="w-5 h-5" /> Login
+              </Link>
+              <Link
+                to="/register"
+                onClick={toggleMenu}
+                className="text-lg tracking-wide flex items-center gap-3 transition-colors text-[#4A3828] hover:text-[#B8956A]"
+              >
+                <User className="w-5 h-5" /> Sign Up
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>
